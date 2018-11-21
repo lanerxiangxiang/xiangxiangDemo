@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -11,12 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.cnpp.searchhistory.activity.RecycleActivity;
+import cn.cnpp.searchhistory.view.CommonTitleLayout;
+import cn.cnpp.searchhistory.view.MediaPlayView;
 
 /**
  * @author dengyalan
@@ -29,9 +34,17 @@ public class MainActivity extends AppCompatActivity {
     ZFlowLayout keywordFl;
     @BindView(R.id.history_fl)
     ZFlowLayout historyFl;
+    @BindView(R.id.bt)
+    Button bt;
+    @BindView(R.id.mediaplay)
+    MediaPlayView mediaplay;
+    @BindView(R.id.keyword_title)
+    CommonTitleLayout keyWordTitle;
+
+
+    private boolean isPlay = false;
 
     public static String[] searchWord = {"净水器", "手机", "电动车", "洗衣机", "沙发", "冰箱", "瓷砖", "空调", "床垫", "卫浴", "热水器", "床", "家具", "手表", "电视", "集成灶", "领带", "保温杯", "童装", "自行车", "空气净化器", "地板", "硅藻泥", "油烟机", "智能家居"};
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +54,23 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         initView();
+        mediaplay.updateSongCount(100);
+        mediaplay.setListener(new MediaPlayView.OnPlayControllerListener() {
+            @Override
+            public void onViewClick() {
+                isPlay = !isPlay;
+                mediaplay.updatePlayStatus(isPlay);
+
+            }
+        });
+
+
     }
 
     private void initView() {
         initKeyword(searchWord);
         initHistory();
+        initTitle(searchWord);
         String[] data = SPUtils.getInstance(this).getHistoryList();
 
         ArrayAdapter<String> autoCompleteAdapter = new ArrayAdapter<String>(this,
@@ -98,6 +123,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    private void initTitle(final String[] keyword) {
+        ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10, 10);
+        keyWordTitle.removeAllViews();
+        for (int i = 0; i < keyword.length; i++) {
+            if (isNullorEmpty(keyword[i])) {
+                return;
+            }
+            final int j = i;
+            //添加分类块
+            View paramItemView = getLayoutInflater().inflate(R.layout.adapter_search_keyword, null);
+            TextView keyWordTv = paramItemView.findViewById(R.id.tv_content);
+            keyWordTv.setText(keyword[j]);
+            keyWordTv.setBackgroundResource(R.drawable.whitebg_strokegrey_radius3);
+            keyWordTitle.addView(paramItemView, layoutParams);
+
+            keyWordTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    autoSearch.setText(keyword[j]);
+                }
+            });
+        }
+    }
+
     private void initKeyword(final String[] keyword) {
         ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
@@ -120,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.clear_iv, R.id.tv_search})
+    @OnClick({R.id.iv_back, R.id.clear_iv, R.id.tv_search, R.id.bt})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -144,6 +195,10 @@ public class MainActivity extends AppCompatActivity {
                 SPUtils.getInstance(MainActivity.this).cleanHistory();
                 showToastShort(this, "已清除历史记录！");
                 initHistory();
+                break;
+            case R.id.bt:
+                Intent intent = new Intent(MainActivity.this, RecycleActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;

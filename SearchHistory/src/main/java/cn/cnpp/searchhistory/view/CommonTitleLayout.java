@@ -1,22 +1,25 @@
-package cn.cnpp.searchhistory;
+package cn.cnpp.searchhistory.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.cnpp.searchhistory.R;
 
 /*****************************
  * @Copyright(c) 2014-2018
  * @Author：dengyalan
  * @Date：2018/1/16
- * @Description：自定义搜索标签布局
+ * @Description：自定义title布局
  * @Version:v1.0.0
  *****************************/
 
-public class ZFlowLayout extends ViewGroup {
+public class CommonTitleLayout extends ViewGroup {
     /**
      * 存储所有子View
      */
@@ -26,17 +29,25 @@ public class ZFlowLayout extends ViewGroup {
      */
     private List<Integer> mLineHeight = new ArrayList<>();
 
-    public ZFlowLayout(Context context) {
+    public CommonTitleLayout(Context context) {
         this(context, null);
     }
 
-    public ZFlowLayout(Context context, AttributeSet attrs) {
+    public CommonTitleLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ZFlowLayout(Context context, AttributeSet attrs, int defStyle) {
+    public CommonTitleLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
+
+
+    public List<String> fromContent = new ArrayList<>();
+
+    public void setFromContent(List<String> fromContent) {
+        this.fromContent = fromContent;
+    }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -54,11 +65,12 @@ public class ZFlowLayout extends ViewGroup {
         //记录每一行的宽度和高度
         int lineWidth = 0;
         int lineHeight = 0;
-
+        String content = "";
         //获取子view的个数
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
+            TextView keyWordTv = child.findViewById(R.id.tv_content);
             //测量子View的宽和高
             measureChild(child, widthMeasureSpec, heightMeasureSpec);
             //得到LayoutParams
@@ -69,13 +81,19 @@ public class ZFlowLayout extends ViewGroup {
             int childHeight = child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
             //换行时候
             if (lineWidth + childWidth > sizeWidth) {
+                String tvContent = keyWordTv.getText().toString().trim();
+                String newTvContent = tvContent.substring(0, 1) + "...";
+                keyWordTv.setText(newTvContent);
                 //对比得到最大的宽度
                 width = Math.max(width, lineWidth);
                 //重置lineWidth
                 lineWidth = childWidth;
                 //记录行高
-                height += lineHeight;
-                lineHeight = childHeight;
+//                height += lineHeight;
+//                lineHeight = childHeight;
+
+                lineHeight = Math.max(lineHeight, childHeight);
+
             } else {//不换行情况
                 //叠加行宽
                 lineWidth += childWidth;
@@ -89,8 +107,9 @@ public class ZFlowLayout extends ViewGroup {
             }
         }
         //wrap_content
-        setMeasuredDimension(modeWidth == MeasureSpec.EXACTLY ? sizeWidth : width,
-                modeHeight == MeasureSpec.EXACTLY ? sizeHeight : height);
+//        高度都是父控件的高度
+        setMeasuredDimension(modeWidth == MeasureSpec.EXACTLY ? sizeWidth : sizeWidth,
+                modeHeight == MeasureSpec.EXACTLY ? sizeHeight : sizeHeight);
     }
 
     @Override

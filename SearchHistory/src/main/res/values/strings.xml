@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SearchHistory</string>
+    <string name="usb_tracklist_num">%1$d首歌曲</string>
 </resources>

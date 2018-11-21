@@ -5,6 +5,19 @@
     android:background="@color/white"
     android:orientation="vertical">
 
+
+    <cn.cnpp.searchhistory.view.MediaPlayView
+        android:id="@+id/mediaplay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <Button
+        android:id="@+id/bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
@@ -72,6 +85,13 @@
                 android:textSize="13sp" />
 
             <View style="@style/VerticalLineStyle" />
+
+
+            <cn.cnpp.searchhistory.view.CommonTitleLayout
+                android:id="@+id/keyword_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
             <cn.cnpp.searchhistory.ZFlowLayout
                 android:id="@+id/keyword_fl"
