@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+//        这是测试数据1
 
         initView();
         mediaplay.updateSongCount(100);
