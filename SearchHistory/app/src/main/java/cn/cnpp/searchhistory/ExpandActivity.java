@@ -20,7 +20,6 @@ public class ExpandActivity extends Activity {
     private ExpandableListView expandableListView;
     private MyExtendableListViewAdapter adapter;
 
-
     public String[] groupString = {"射手", "辅助", "坦克", "法师222"};
     public String[][] childString = {
             {"孙尚香", "后羿", "马可波罗", "狄仁杰"},
