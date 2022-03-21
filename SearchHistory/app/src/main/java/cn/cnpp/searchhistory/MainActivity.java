@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
 //        这是测试数据 8222
 //        增加新数据
 
-
         initView();
         mediaplay.updateSongCount(100);
         mediaplay.setListener(new MediaPlayView.OnPlayControllerListener() {
